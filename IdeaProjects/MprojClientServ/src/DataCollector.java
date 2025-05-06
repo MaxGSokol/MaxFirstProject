@@ -1,11 +1,8 @@
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.zip.CRC32;
 
 public class DataCollector implements Runnable {
 
@@ -43,7 +40,7 @@ Thread thread = new Thread(dataPack);
 
     private void toGetDefaultConnection() {
         ConsoleTools.writeMessage("Устанавливаем соединение с сервером.");
-        ConnectionRun connectionRun = null;
+      //  Connection connection = null;
         // connection = new Connection(new Socket("localhost",4004));
       //  connectionRun = new ConnectionRun();
        // Thread thread = new Thread(connectionRun);

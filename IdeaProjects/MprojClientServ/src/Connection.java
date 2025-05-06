@@ -7,7 +7,7 @@ public class Connection implements Runnable {
 private ObjectInputStream in;
 private ObjectOutputStream out;
 private Socket socket;
-
+private DataManager dataManager;
 
 
     public Connection() {
@@ -21,7 +21,15 @@ private Socket socket;
 
     @Override
     public void run() {
+        testTr();
+        while (true){
+            if (dataManager != null){
 
+                ConsoleTools.writeMessage("Сообщение отправлено!");
+
+                this.dataManager = null;
+            }
+        }
 
 
 
@@ -92,4 +100,7 @@ private Socket socket;
 
     }
 
+    public void setDataManager(DataManager dataManager) {
+        this.dataManager = dataManager;
+    }
 }

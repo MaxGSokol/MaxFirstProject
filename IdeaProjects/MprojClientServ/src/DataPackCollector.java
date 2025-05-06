@@ -14,7 +14,7 @@ public class DataPackCollector implements Runnable{
 
     @Override
     public void run() {
-        ConnectionRun connection = new ConnectionRun();
+        Connection connection = new Connection();
         DataManager dataManager = null;
         while (true) {
              if (userName != null  && dataType != null && dataMap != null) {
@@ -30,6 +30,11 @@ public class DataPackCollector implements Runnable{
                   }
                 ConsoleTools.writeMessage("Длинна данных в байтах - " + dataManager.getDataLength());
                 ConsoleTools.writeMessage("CRC32 - " + dataManager.getControlSum().getValue());
+
+                 connection.setDataManager(dataManager);
+
+                 Thread thread = new Thread(connection);
+                 thread.start();
 
                 this.userName = null;
                 this.dataType = null;
