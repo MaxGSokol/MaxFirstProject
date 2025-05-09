@@ -37,7 +37,7 @@ public class ConsoleTools {
     public static int readInt() {
         int num = 0;
         try {
-          num = Integer.parseInt(readLine());
+            num = Integer.parseInt(readLine());
         } catch (NumberFormatException e) {
             exceptionMessage("Ввести нужно именно число.");
         }

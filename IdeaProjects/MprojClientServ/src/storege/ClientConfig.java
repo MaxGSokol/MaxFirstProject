@@ -7,10 +7,11 @@ public class ClientConfig {
     public static final Map<String, String> CLIENT_CONFIG = new ConcurrentHashMap<>();
 
     static {
-        CLIENT_CONFIG.put("userName", " ИМПЕРАТОР ВСЕГО ЧЕЛОВЕЧЕСТВА");
+        CLIENT_CONFIG.put("userName", "Иван Залупа");
         CLIENT_CONFIG.put("Ip", "localhost");
-        CLIENT_CONFIG.put("Port", "4004");
+        CLIENT_CONFIG.put("Port", "8897");
     }
 
     public static volatile boolean IS_EXIT;
+    public static volatile boolean IS_SEND;
 }

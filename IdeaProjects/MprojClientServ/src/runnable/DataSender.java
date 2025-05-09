@@ -21,6 +21,8 @@ public class DataSender implements Runnable {
             FullDataPack fullDataPack = DataStorage.FULL_PACK_STORAGE.pollLast();
             if (fullDataPack != null) {
                 checkData(fullDataPack);
+
+                ClientConfig.IS_SEND = true;
             }
         }
 

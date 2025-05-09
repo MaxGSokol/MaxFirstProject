@@ -1,20 +1,10 @@
-import datapacks.InputDataPack;
 import runnable.DataSender;
 import runnable.FullDataPackCollector;
 import runnable.InputDataCollector;
-import serves.ClientServerConnection;
-import serves.ConsoleTools;
-import serves.DataType;
-import storege.ClientConfig;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 
 public class Client {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         DataSender dataSender = new DataSender();
         Thread thread1 = new Thread(dataSender);

@@ -26,13 +26,13 @@ public class InputDataCollector implements Runnable {
 
             DataStorage.INPUT_DATA_STORAGE.addFirst(inputDataPack);
 
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            while (!ClientConfig.IS_SEND) {
             }
 
+            ClientConfig.IS_SEND = false;
+
             stopThreads();
+
         }
 
     }
@@ -60,13 +60,12 @@ public class InputDataCollector implements Runnable {
         ConsoleTools.writeMessage("Если желаете выставить постоянную температуру введите || 1 ||.");
         ConsoleTools.writeMessage("Если желаете настроить разную температуру на утро, день и ночь, введите || 2 ||");
         ConsoleTools.writeMessage("Наше оборудование поддерживает температуру от 16 до 35 градусов цельсия.");
-        InputDataPack inputDataPack;
         while (true) {
             switch (ConsoleTools.readInt()) {
                 case 1:
-                    return inputDataPack = new InputDataPack(userName, dataType, getIntDate(), DataType.SIMPLE);
+                    return new InputDataPack(userName, dataType, getIntDate(), DataType.SIMPLE);
                 case 2:
-                    return inputDataPack = new InputDataPack(userName, dataType, getMapDate(), DataType.ADVANCE);
+                    return new InputDataPack(userName, dataType, getMapDate(), DataType.ADVANCE);
                 default:
                     ConsoleTools.exceptionMessage("Некоректный ввод. Попробуйте еще раз.");
             }
