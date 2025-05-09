@@ -1,39 +1,42 @@
 package datapacks;
 
-import serves.Info;
+import serves.ConsoleTools;
+import serves.DataType;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class InputDataPack {
-    private String userName;
-    private Info fileType;
+public class InputDataPack implements Serializable {
+    private final String USER_NAME;
+    private final DataType FILE_TYPE;
     private int simpleData;
     private Map<String, Integer> dataMap;
-    private Info dataType;
+    private final DataType DATA_TYPE;
 
-    public InputDataPack(String userName, Info fileType, int simpleData, Info dataType) {
-        this.userName = userName;
-        this.fileType = fileType;
+    public InputDataPack(String USER_NAME, DataType FILE_TYPE, int simpleData, DataType DATA_TYPE) {
+        this.USER_NAME = USER_NAME;
+        this.FILE_TYPE = FILE_TYPE;
         this.simpleData = simpleData;
-        this.dataType = dataType;
-        System.out.println(" I ");
+        this.DATA_TYPE = DATA_TYPE;
+        ConsoleTools.statusMessage("Данные собраны и отправленны на дальнейшую обработку.");
+
     }
 
-    public InputDataPack(String userName, Info fileType, Map<String, Integer> dataMap, Info dataType) {
-        this.userName = userName;
-        this.fileType = fileType;
+    public InputDataPack(String USER_NAME, DataType FILE_TYPE, Map<String, Integer> dataMap, DataType DATA_TYPE) {
+        this.USER_NAME = USER_NAME;
+        this.FILE_TYPE = FILE_TYPE;
         this.dataMap = dataMap;
-        this.dataType = dataType;
+        this.DATA_TYPE = DATA_TYPE;
+        ConsoleTools.statusMessage("Данные собраны и отправленны на дальнейшую обработку.");
 
-        System.out.println(" I ");
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUSER_NAME() {
+        return USER_NAME;
     }
 
-    public Info getFileType() {
-        return fileType;
+    public DataType getFILE_TYPE() {
+        return FILE_TYPE;
     }
 
     public int getSimpleData() {
@@ -44,7 +47,7 @@ public class InputDataPack {
         return dataMap;
     }
 
-    public Info getDataType() {
-        return dataType;
+    public DataType getDATA_TYPE() {
+        return DATA_TYPE;
     }
 }

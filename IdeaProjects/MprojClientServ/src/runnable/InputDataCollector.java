@@ -2,8 +2,9 @@ package runnable;
 
 import datapacks.InputDataPack;
 import serves.ConsoleTools;
-import serves.Info;
-import storege.InputDataStorage;
+import serves.DataType;
+import storege.ClientConfig;
+import storege.DataStorage;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,117 +13,102 @@ public class InputDataCollector implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
-            InputDataPack inputDataPack = null;
 
-            String userName = toGetUsername();
+        ConsoleTools.intro();
 
-            Info fileInfo = toGetDataType();
+        while (!ClientConfig.IS_EXIT) {
 
-            Map<String, Integer> mapDate = null;
-            int simpleDate = 0;
-            switch (toGetData()) {
-                case "А":
-                    simpleDate = toGetIntDate();
-                    inputDataPack = new InputDataPack(userName, fileInfo, simpleDate, Info.SIMPLE);
-                    break;
-                case "Б":
-                    mapDate = toGetMapDate();
-                    inputDataPack = new InputDataPack(userName, fileInfo, mapDate, Info.ADVANCE);
-                    break;
+            String userName = ClientConfig.CLIENT_CONFIG.get("userName");
+
+            DataType fileDataType = getDataType();
+
+            InputDataPack inputDataPack = getDataPack(userName, fileDataType);
+
+            DataStorage.INPUT_DATA_STORAGE.addFirst(inputDataPack);
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
 
-            InputDataStorage.inputDataStorage.addFirst(inputDataPack);
+            stopThreads();
         }
 
     }
 
-
-    private String toGetUsername() {
-        ConsoleTools.writeMessage("Введите имя пользователя.");
-        return ConsoleTools.readLine();
-    }
-
-    private Info toGetDataType() {
-        ConsoleTools.writeMessage("Если вы хотите вывести данные в косоль введите \"кон\"");
-        ConsoleTools.writeMessage("Если вы хотите сохранит данные в обычном файле введите \"ОФ\"");
-        ConsoleTools.writeMessage("Если вы хотите сохранить данные в формате \"json\" введите \"ДЖ\"");
+    private DataType getDataType() {
+        ConsoleTools.writeMessage("Если вы хотите вывести данные в косоль введите || 1 ||.");
+        ConsoleTools.writeMessage("Если вы хотите сохранит данные в обычном файле введите || 2 ||.");
+        ConsoleTools.writeMessage("Если вы хотите сохранить данные в формате \"json\" введите || 3 ||.");
 
         while (true) {
-            switch (ConsoleTools.readLine()) {
-                case "кон":
-                    return Info.CONSOLE;
-                case "ОФ":
-                    return Info.PLAIN;
-                case "ДЖ":
-                    return Info.JSON;
+            switch (ConsoleTools.readInt()) {
+                case 1:
+                    return DataType.CONSOLE;
+                case 2:
+                    return DataType.PLAIN;
+                case 3:
+                    return DataType.JSON;
                 default:
-                    ConsoleTools.writeMessage("Некоректный ввод. Попробуйте еще раз.");
+                    ConsoleTools.exceptionMessage("Некоректный ввод. Попробуйте еще раз.");
             }
         }
     }
 
-    private String toGetData() {
-        ConsoleTools.writeMessage("Если желаете выставить постоянную температуру введите \"А\" ");
-        ConsoleTools.writeMessage("Если желаете настроить разную температуру на утро, день и ночь, введите \"Б\" ");
+    private InputDataPack getDataPack(String userName, DataType dataType) {
+        ConsoleTools.writeMessage("Если желаете выставить постоянную температуру введите || 1 ||.");
+        ConsoleTools.writeMessage("Если желаете настроить разную температуру на утро, день и ночь, введите || 2 ||");
         ConsoleTools.writeMessage("Наше оборудование поддерживает температуру от 16 до 35 градусов цельсия.");
+        InputDataPack inputDataPack;
         while (true) {
-            switch (ConsoleTools.readLine()) {
-                case "А":
-                    return "А";
-                case "Б":
-                    return "Б";
+            switch (ConsoleTools.readInt()) {
+                case 1:
+                    return inputDataPack = new InputDataPack(userName, dataType, getIntDate(), DataType.SIMPLE);
+                case 2:
+                    return inputDataPack = new InputDataPack(userName, dataType, getMapDate(), DataType.ADVANCE);
                 default:
-                    ConsoleTools.writeMessage("Некоректный ввод. Попробуйте еще раз.");
+                    ConsoleTools.exceptionMessage("Некоректный ввод. Попробуйте еще раз.");
             }
         }
     }
 
-    private int toGetIntDate() {
+    private int getIntDate() {
         ConsoleTools.writeMessage("Введите желаемую температуру.");
         while (true) {
             int simpleDate = ConsoleTools.readInt();
             if (simpleDate >= 16 && simpleDate <= 35) {
                 return simpleDate;
             } else {
-                ConsoleTools.writeMessage("Введены неверные данные. Повторите ввод");
+                ConsoleTools.exceptionMessage("Введены неверные данные. Повторите ввод");
             }
         }
     }
 
-    private Map<String, Integer> toGetMapDate() {
+    private Map<String, Integer> getMapDate() {
         Map<String, Integer> mapDate = new ConcurrentHashMap<>();
-        ConsoleTools.writeMessage("Введите желаемую температуру на первую половину дня.");
-        while (true) {
-            int mor = ConsoleTools.readInt();
-            if (mor >= 16 && mor <= 35) {
-                mapDate.put("Утро", mor);
-                break;
-            } else {
-                ConsoleTools.writeMessage("Введены неверные данные. Повторите ввод");
-            }
-        }
-        ConsoleTools.writeMessage("Введите желаемую температуру на вторую половину дня.");
-        while (true) {
-            int mor = ConsoleTools.readInt();
-            if (mor >= 16 && mor <= 35) {
-                mapDate.put("Вечер", mor);
-                break;
-            } else {
-                ConsoleTools.writeMessage("Введены неверные данные. Повторите ввод");
-            }
-        }
-        ConsoleTools.writeMessage("Введите желаемую температуру на ночь.");
-        while (true) {
-            int mor = ConsoleTools.readInt();
-            if (mor >= 16 && mor <= 35) {
-                mapDate.put("Ночь", mor);
-                break;
-            } else {
-                ConsoleTools.writeMessage("Введены неверные данные. Повторите ввод");
-            }
-        }
+
+        ConsoleTools.writeMessage("Установка режима на первую половину дня.");
+        int morn = getIntDate();
+        mapDate.put("Утро", morn);
+
+        ConsoleTools.writeMessage("Установка режима на вторую половину дня.");
+        int day = getIntDate();
+        mapDate.put("Вечер", day);
+
+        ConsoleTools.writeMessage("Установка режима на ночное время.");
+        int night = getIntDate();
+        mapDate.put("Ночь", night);
+
         return mapDate;
+    }
+
+    private void stopThreads() {
+        ConsoleTools.writeMessage("Если хотите завершить программу нажмите || 1 ||.");
+        ConsoleTools.writeMessage("Для продолжения нажмите любую другую клавишу.");
+        if (ConsoleTools.readLine().equals("1")) {
+            ClientConfig.IS_EXIT = true;
+        }
     }
 
 }

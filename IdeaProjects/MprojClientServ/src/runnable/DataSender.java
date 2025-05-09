@@ -1,66 +1,58 @@
 package runnable;
 
 import datapacks.FullDataPack;
-import serves.Connection;
+import serves.ClientServerConnection;
 import serves.ConsoleTools;
-import serves.Info;
-import serves.Massage;
-import storege.FullPackageStorage;
-
-import java.io.IOException;
+import serves.DataType;
+import storege.ClientConfig;
+import storege.DataStorage;
 
 public class DataSender implements Runnable {
-    private Connection connection;
+    private final ClientServerConnection CLIENT_SERVER_CONNECTION;
 
-    public DataSender(Connection connection) {
-        this.connection = connection;
+    public DataSender() {
+        this.CLIENT_SERVER_CONNECTION = new ClientServerConnection();
     }
 
     @Override
     public void run() {
-        while (true) {
-            FullDataPack fullDataPack = FullPackageStorage.fullPackStorage.pollLast();
+
+        while (!ClientConfig.IS_EXIT) {
+            FullDataPack fullDataPack = DataStorage.FULL_PACK_STORAGE.pollLast();
             if (fullDataPack != null) {
-                System.out.println(fullDataPack.getInputDataPack().getUserName());
+                checkData(fullDataPack);
             }
         }
 
     }
 
-    public void testTr() {
-        ConsoleTools.writeMessage("Связь с сервером установлена");
-    }
+    private void checkData(FullDataPack fullDataPack) {
+        ConsoleTools.statusMessage("Проверка содержимого пакета перед отправкой.");
+        ConsoleTools.writeMessage("Содержимое пакета данных.");
+        ConsoleTools.writeMessage("Сигнатура - " + fullDataPack.getSIGNATURE());
+        ConsoleTools.writeMessage("Имя пользователя - "
+                + fullDataPack.getINPUT_DATA_PACK().getUSER_NAME());
+        ConsoleTools.writeMessage("Способ вывода данных на сервере - "
+                + fullDataPack.getINPUT_DATA_PACK().getFILE_TYPE().name());
 
-    public void handChpock() {
-        sendData(new Massage(Info.CONNECTION_REQUEST));
-        while (true) {
-            Info info = receiveData().getServesInfo();
-            if (info == Info.CONNECTION_ACCEPT) {
-                ConsoleTools.writeMessage("Связь с сервером установлена");
-                return;
+        if (fullDataPack.getINPUT_DATA_PACK().getDATA_TYPE() == DataType.ADVANCE) {
+            ConsoleTools.writeMessage("Выбранные температурные режимы.");
+
+            for (String key : fullDataPack.getINPUT_DATA_PACK().getDataMap().keySet()) {
+                Integer value = fullDataPack.getINPUT_DATA_PACK().getDataMap().get(key);
+                ConsoleTools.writeMessage(key + " - " + value + " градуса.");
             }
         }
-    }
 
-    public void sendData(Massage massage) {
-        try {
-            connection.getOut().writeObject(massage);
-        } catch (IOException e) {
-            ConsoleTools.writeMessage("Возникла ошибка при отправлении данных!");
+        if (fullDataPack.getINPUT_DATA_PACK().getDATA_TYPE() == DataType.SIMPLE) {
+            ConsoleTools.writeMessage("Выбранный температурный режим - "
+                    + fullDataPack.getINPUT_DATA_PACK().getSimpleData() + " градуса.");
         }
-    }
 
-    public Massage receiveData() {
-        while (true) {
-            try {
-                Massage massage = (Massage) connection.getIn().readObject();
-                if (massage != null) {
-                    return massage;
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                ConsoleTools.writeMessage("Возникла ошибка при приеме данных");
-            }
-        }
+        ConsoleTools.writeMessage("Длинна данных в байтах - " + fullDataPack.getDATA_LENGTH());
+        ConsoleTools.writeMessage("CRC32 - " + fullDataPack.getCONTROL_SUM().getValue());
     }
 
 }
+
+
