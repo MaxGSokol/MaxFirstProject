@@ -46,7 +46,7 @@ public class ConsoleTools {
 
     public static void intro() {
         ConsoleTools.writeMessage(
-                "Приветствуем вас " + ClientConfig.CLIENT_CONFIG.get("userName")
+                "Приветствуем вас " + ClientConfig.PROPERTIES.getProperty("userName")
                         + " !\n Вы запустили программу удаленного управления\n "
                         + "системой домашнего кондиционирования.");
         ConsoleTools.writeMessage("Далее вводите информацию с клавиатуры согласно инструкции.");

@@ -18,7 +18,8 @@ public class InputDataCollector implements Runnable {
 
         while (!ClientConfig.IS_EXIT) {
 
-            String userName = ClientConfig.CLIENT_CONFIG.get("userName");
+
+            String userName = ClientConfig.PROPERTIES.getProperty("userName");
 
             DataType fileDataType = getDataType();
 
