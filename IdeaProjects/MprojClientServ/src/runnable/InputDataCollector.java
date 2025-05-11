@@ -18,20 +18,15 @@ public class InputDataCollector implements Runnable {
 
         while (!ClientConfig.IS_EXIT) {
 
-
-            String userName = ClientConfig.PROPERTIES.getProperty("userName");
-
+            String userName = ClientConfig.USER_NAME;
             DataType fileDataType = getDataType();
-
             InputDataPack inputDataPack = getDataPack(userName, fileDataType);
-
             DataStorage.INPUT_DATA_STORAGE.addFirst(inputDataPack);
 
             while (!ClientConfig.IS_SEND) {
             }
 
             ClientConfig.IS_SEND = false;
-
             stopThreads();
 
         }

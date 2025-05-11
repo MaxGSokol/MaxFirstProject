@@ -31,11 +31,11 @@ public class InputDataPack implements Serializable {
 
     }
 
-    public String getUSER_NAME() {
+    public String getUserName() {
         return USER_NAME;
     }
 
-    public DataType getFILE_TYPE() {
+    public DataType getFileType() {
         return FILE_TYPE;
     }
 
@@ -47,7 +47,7 @@ public class InputDataPack implements Serializable {
         return dataMap;
     }
 
-    public DataType getDATA_TYPE() {
+    public DataType getDataType() {
         return DATA_TYPE;
     }
 }

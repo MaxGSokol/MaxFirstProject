@@ -17,19 +17,19 @@ public class FullDataPack {
         ConsoleTools.statusMessage("Пакет данных полностью укомплектован.");
     }
 
-    public InputDataPack getINPUT_DATA_PACK() {
+    public InputDataPack getInputDataPack() {
         return INPUT_DATA_PACK;
     }
 
-    public long getDATA_LENGTH() {
+    public long getDataLength() {
         return DATA_LENGTH;
     }
 
-    public CRC32 getCONTROL_SUM() {
+    public CRC32 getControlSum() {
         return CONTROL_SUM;
     }
 
-    public String getSIGNATURE() {
+    public String getSignature() {
         return SIGNATURE;
     }
 }

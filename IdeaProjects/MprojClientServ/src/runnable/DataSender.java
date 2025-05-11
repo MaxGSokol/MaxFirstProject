@@ -31,28 +31,28 @@ public class DataSender implements Runnable {
     private void checkData(FullDataPack fullDataPack) {
         ConsoleTools.statusMessage("Проверка содержимого пакета перед отправкой.");
         ConsoleTools.writeMessage("Содержимое пакета данных.");
-        ConsoleTools.writeMessage("Сигнатура - " + fullDataPack.getSIGNATURE());
+        ConsoleTools.writeMessage("Сигнатура - " + fullDataPack.getSignature());
         ConsoleTools.writeMessage("Имя пользователя - "
-                + fullDataPack.getINPUT_DATA_PACK().getUSER_NAME());
+                + fullDataPack.getInputDataPack().getUserName());
         ConsoleTools.writeMessage("Способ вывода данных на сервере - "
-                + fullDataPack.getINPUT_DATA_PACK().getFILE_TYPE().name());
+                + fullDataPack.getInputDataPack().getFileType().name());
 
-        if (fullDataPack.getINPUT_DATA_PACK().getDATA_TYPE() == DataType.ADVANCE) {
+        if (fullDataPack.getInputDataPack().getDataType() == DataType.ADVANCE) {
             ConsoleTools.writeMessage("Выбранные температурные режимы.");
 
-            for (String key : fullDataPack.getINPUT_DATA_PACK().getDataMap().keySet()) {
-                Integer value = fullDataPack.getINPUT_DATA_PACK().getDataMap().get(key);
+            for (String key : fullDataPack.getInputDataPack().getDataMap().keySet()) {
+                Integer value = fullDataPack.getInputDataPack().getDataMap().get(key);
                 ConsoleTools.writeMessage(key + " - " + value + " градуса.");
             }
         }
 
-        if (fullDataPack.getINPUT_DATA_PACK().getDATA_TYPE() == DataType.SIMPLE) {
+        if (fullDataPack.getInputDataPack().getDataType() == DataType.SIMPLE) {
             ConsoleTools.writeMessage("Выбранный температурный режим - "
-                    + fullDataPack.getINPUT_DATA_PACK().getSimpleData() + " градуса.");
+                    + fullDataPack.getInputDataPack().getSimpleData() + " градуса.");
         }
 
-        ConsoleTools.writeMessage("Длинна данных в байтах - " + fullDataPack.getDATA_LENGTH());
-        ConsoleTools.writeMessage("CRC32 - " + fullDataPack.getCONTROL_SUM().getValue());
+        ConsoleTools.writeMessage("Длинна данных в байтах - " + fullDataPack.getDataLength());
+        ConsoleTools.writeMessage("CRC32 - " + fullDataPack.getControlSum().getValue());
     }
 
 }
