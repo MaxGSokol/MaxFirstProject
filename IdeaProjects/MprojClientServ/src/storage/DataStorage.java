@@ -1,4 +1,4 @@
-package storege;
+package storage;
 
 import datapacks.FullDataPack;
 import datapacks.InputDataPack;

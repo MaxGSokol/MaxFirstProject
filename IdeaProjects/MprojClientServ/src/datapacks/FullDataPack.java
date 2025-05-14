@@ -1,35 +1,16 @@
 package datapacks;
 
-import serves.ConsoleTools;
+import lombok.Builder;
+import lombok.Getter;
+import source.ClientServerConfig;
 
-import java.util.zip.CRC32;
+import java.io.Serializable;
 
-public class FullDataPack {
-    private static final String SIGNATURE = "(13)JU84";
-    private final InputDataPack INPUT_DATA_PACK;
-    private final long DATA_LENGTH;
-    private final CRC32 CONTROL_SUM;
-
-    public FullDataPack(InputDataPack INPUT_DATA_PACK, long DATA_LENGTH, CRC32 CONTROL_SUM) {
-        this.INPUT_DATA_PACK = INPUT_DATA_PACK;
-        this.DATA_LENGTH = DATA_LENGTH;
-        this.CONTROL_SUM = CONTROL_SUM;
-        ConsoleTools.statusMessage("Пакет данных полностью укомплектован.");
-    }
-
-    public InputDataPack getInputDataPack() {
-        return INPUT_DATA_PACK;
-    }
-
-    public long getDataLength() {
-        return DATA_LENGTH;
-    }
-
-    public CRC32 getControlSum() {
-        return CONTROL_SUM;
-    }
-
-    public String getSignature() {
-        return SIGNATURE;
-    }
+@Getter
+@Builder
+public class FullDataPack implements Serializable {
+    private final String signature = ClientServerConfig.SIGNATURE;
+    private final InputDataPack inputDataPack;
+    private final long dataLength;
+    private final long controlSum;
 }

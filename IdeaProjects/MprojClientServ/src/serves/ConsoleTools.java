@@ -1,33 +1,66 @@
 package serves;
 
-import storege.ClientConfig;
+import source.ClientServerConfig;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ConsoleTools {
     private static final BufferedReader BUFFERED_READER = new BufferedReader(new InputStreamReader(System.in));
+    private static FileWriter FILE_WRITER;
+    private static LocalDateTime LOCAL_DATE_TIME;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static String DATE_TIME;
 
     public static void writeMessage(String message) {
         System.out.println(message);
     }
 
     public static void statusMessage(String statusMessage) {
-        System.out.println("СТАТУС : " + statusMessage);
+        if (ClientServerConfig.IS_LOGGING) {
+            System.out.println("\u001B[31m" + "СТАТУС : " + statusMessage + "\u001B[0m");
+        }
+        LOCAL_DATE_TIME = LocalDateTime.now();
+        DATE_TIME = LOCAL_DATE_TIME.format(FORMATTER);
+        try {
+            FILE_WRITER = new FileWriter(ClientServerConfig.LOG_PATH, true);
+            FILE_WRITER.write(DATE_TIME + " СТАТУС : " + statusMessage + "\n");
+        } catch (IOException e) {
+            exceptionMessage("Невозможно произвести запись в файл.");
+
+        } finally {
+            try {
+                FILE_WRITER.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public static void exceptionMessage(String exceptionMessage) {
         System.out.println("ОШИБКА ! " + exceptionMessage);
+
+        LOCAL_DATE_TIME = LocalDateTime.now();
+        DATE_TIME = LOCAL_DATE_TIME.format(FORMATTER);
+        try {
+            FILE_WRITER = new FileWriter(ClientServerConfig.LOG_PATH, true);
+            FILE_WRITER.write(DATE_TIME + " СОШИБКА ! " + exceptionMessage + "\n");
+        } catch (IOException e) {
+            exceptionMessage("Невозможно произвести запись в файл.");
+        } finally {
+            try {
+                FILE_WRITER.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public static String readLine() {
         String input = null;
         try {
             input = BUFFERED_READER.readLine();
-            if (input != null) {
-
-            }
         } catch (IOException e) {
             exceptionMessage("Данные не считываются.");
         }
@@ -42,14 +75,6 @@ public class ConsoleTools {
             exceptionMessage("Ввести нужно именно число.");
         }
         return num;
-    }
-
-    public static void intro() {
-        ConsoleTools.writeMessage(
-                "Приветствуем вас " + ClientConfig.USER_NAME
-                        + " !\n Вы запустили программу удаленного управления\n "
-                        + "системой домашнего кондиционирования.");
-        ConsoleTools.writeMessage("Далее вводите информацию с клавиатуры согласно инструкции.");
     }
 
 }

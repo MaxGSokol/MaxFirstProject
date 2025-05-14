@@ -4,55 +4,58 @@ import datapacks.FullDataPack;
 import serves.ClientServerConnection;
 import serves.ConsoleTools;
 import serves.DataType;
-import storege.ClientConfig;
-import storege.DataStorage;
+import source.ClientServerConfig;
+import storage.DataStorage;
+
+import java.io.IOException;
 
 public class DataSender implements Runnable {
     private final ClientServerConnection CLIENT_SERVER_CONNECTION;
 
-    public DataSender() {
+    public DataSender() throws IOException {
         this.CLIENT_SERVER_CONNECTION = new ClientServerConnection();
     }
 
     @Override
     public void run() {
 
-        while (!ClientConfig.IS_EXIT) {
+        while (!ClientServerConfig.IS_EXIT) {
             FullDataPack fullDataPack = DataStorage.FULL_PACK_STORAGE.pollLast();
             if (fullDataPack != null) {
                 checkData(fullDataPack);
 
-                ClientConfig.IS_SEND = true;
+                CLIENT_SERVER_CONNECTION.sendAllotOfData(fullDataPack);
+                CLIENT_SERVER_CONNECTION.send("");
+                ConsoleTools.statusMessage(CLIENT_SERVER_CONNECTION.receive());
+
+
             }
         }
-
     }
 
     private void checkData(FullDataPack fullDataPack) {
-        ConsoleTools.statusMessage("Проверка содержимого пакета перед отправкой.");
-        ConsoleTools.writeMessage("Содержимое пакета данных.");
-        ConsoleTools.writeMessage("Сигнатура - " + fullDataPack.getSignature());
-        ConsoleTools.writeMessage("Имя пользователя - "
-                + fullDataPack.getInputDataPack().getUserName());
-        ConsoleTools.writeMessage("Способ вывода данных на сервере - "
-                + fullDataPack.getInputDataPack().getFileType().name());
-
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Проверка содержимого пакета перед отправкой.\n");
+        stringBuilder.append("Содержимое пакета данных.\n");
+        stringBuilder.append("Сигнатура - " + fullDataPack.getSignature() + "\n");
+        stringBuilder.append("Имя пользователя - " + fullDataPack.getInputDataPack().getUserName() + "\n");
+        stringBuilder.append("Способ вывода данных на сервере - " +
+                fullDataPack.getInputDataPack().getFileType().name() + "\n");
         if (fullDataPack.getInputDataPack().getDataType() == DataType.ADVANCE) {
-            ConsoleTools.writeMessage("Выбранные температурные режимы.");
+            stringBuilder.append("Выбранные температурные режимы.\n");
 
             for (String key : fullDataPack.getInputDataPack().getDataMap().keySet()) {
                 Integer value = fullDataPack.getInputDataPack().getDataMap().get(key);
-                ConsoleTools.writeMessage(key + " - " + value + " градуса.");
+                stringBuilder.append(key + " - " + value + " градуса.\n");
             }
         }
-
         if (fullDataPack.getInputDataPack().getDataType() == DataType.SIMPLE) {
-            ConsoleTools.writeMessage("Выбранный температурный режим - "
-                    + fullDataPack.getInputDataPack().getSimpleData() + " градуса.");
+            stringBuilder.append("Выбранный температурный режим - "
+                    + fullDataPack.getInputDataPack().getSimpleData() + " градуса.\n");
         }
-
-        ConsoleTools.writeMessage("Длинна данных в байтах - " + fullDataPack.getDataLength());
-        ConsoleTools.writeMessage("CRC32 - " + fullDataPack.getControlSum().getValue());
+        stringBuilder.append("Длинна данных в байтах - " + fullDataPack.getDataLength() + "\n");
+        stringBuilder.append("CRC32 - " + fullDataPack.getControlSum());
+        ConsoleTools.statusMessage(stringBuilder.toString());
     }
 
 }

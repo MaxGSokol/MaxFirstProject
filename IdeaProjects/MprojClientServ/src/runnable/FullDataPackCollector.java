@@ -3,8 +3,8 @@ package runnable;
 import datapacks.FullDataPack;
 import datapacks.InputDataPack;
 import serves.ConsoleTools;
-import storege.ClientConfig;
-import storege.DataStorage;
+import source.ClientServerConfig;
+import storage.DataStorage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
@@ -15,17 +15,18 @@ public class FullDataPackCollector implements Runnable {
     @Override
     public void run() {
 
-        while (!ClientConfig.IS_EXIT) {
+        while (!ClientServerConfig.IS_EXIT) {
             FullDataPack fullDataPack;
             InputDataPack inputDataPack = DataStorage.INPUT_DATA_STORAGE.pollLast();
             if (inputDataPack != null) {
-                fullDataPack = new FullDataPack(
-                        inputDataPack, getDataLength(getDataBytesArray(inputDataPack)),
-                        getCRC32(getDataBytesArray(inputDataPack)));
+                fullDataPack = FullDataPack.builder()
+                        .inputDataPack(inputDataPack)
+                        .dataLength(getDataLength(getDataBytesArray(inputDataPack)))
+                        .controlSum(getCRC32(getDataBytesArray(inputDataPack))).build();
+
                 DataStorage.FULL_PACK_STORAGE.addFirst(fullDataPack);
             }
         }
-
     }
 
     private byte[] getDataBytesArray(InputDataPack inputDataPack) {
@@ -44,10 +45,10 @@ public class FullDataPackCollector implements Runnable {
         return obj.length;
     }
 
-    private CRC32 getCRC32(byte[] obj) {
+    private long getCRC32(byte[] obj) {
         CRC32 crc32 = new CRC32();
         crc32.update(obj);
-        return crc32;
+        return crc32.getValue();
     }
 
 }

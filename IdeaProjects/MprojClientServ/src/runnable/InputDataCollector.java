@@ -3,8 +3,8 @@ package runnable;
 import datapacks.InputDataPack;
 import serves.ConsoleTools;
 import serves.DataType;
-import storege.ClientConfig;
-import storege.DataStorage;
+import source.ClientServerConfig;
+import storage.DataStorage;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,23 +14,26 @@ public class InputDataCollector implements Runnable {
     @Override
     public void run() {
 
-        ConsoleTools.intro();
+        intro();
 
-        while (!ClientConfig.IS_EXIT) {
+        while (!ClientServerConfig.IS_EXIT) {
 
-            String userName = ClientConfig.USER_NAME;
+            String userName = ClientServerConfig.USER_NAME;
             DataType fileDataType = getDataType();
             InputDataPack inputDataPack = getDataPack(userName, fileDataType);
             DataStorage.INPUT_DATA_STORAGE.addFirst(inputDataPack);
 
-            while (!ClientConfig.IS_SEND) {
-            }
-
-            ClientConfig.IS_SEND = false;
             stopThreads();
-
         }
 
+    }
+
+    private void intro() {
+        ConsoleTools.writeMessage(
+                "Приветствуем вас " + ClientServerConfig.USER_NAME
+                        + " !\n Вы запустили программу удаленного управления\n "
+                        + "системой домашнего кондиционирования.");
+        ConsoleTools.writeMessage("Далее вводите информацию с клавиатуры согласно инструкции.");
     }
 
     private DataType getDataType() {
@@ -59,9 +62,19 @@ public class InputDataCollector implements Runnable {
         while (true) {
             switch (ConsoleTools.readInt()) {
                 case 1:
-                    return new InputDataPack(userName, dataType, getIntDate(), DataType.SIMPLE);
+                    return new InputDataPack(
+                            userName,
+                            dataType,
+                            getIntDate(),
+                            DataType.SIMPLE
+                    );
                 case 2:
-                    return new InputDataPack(userName, dataType, getMapDate(), DataType.ADVANCE);
+                    return new InputDataPack(
+                            userName,
+                            dataType,
+                            getMapDate(),
+                            DataType.ADVANCE
+                    );
                 default:
                     ConsoleTools.exceptionMessage("Некоректный ввод. Попробуйте еще раз.");
             }
@@ -102,7 +115,7 @@ public class InputDataCollector implements Runnable {
         ConsoleTools.writeMessage("Если хотите завершить программу нажмите || 1 ||.");
         ConsoleTools.writeMessage("Для продолжения нажмите любую другую клавишу.");
         if (ConsoleTools.readLine().equals("1")) {
-            ClientConfig.IS_EXIT = true;
+            ClientServerConfig.IS_EXIT = true;
         }
     }
 
