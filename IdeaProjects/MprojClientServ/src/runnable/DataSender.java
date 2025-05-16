@@ -26,6 +26,7 @@ public class DataSender implements Runnable {
                 CLIENT_SERVER_CONNECTION.sendAllotOfData(fullDataPack);
             }
         }
+        CLIENT_SERVER_CONNECTION.close();
     }
 
     private void checkData(FullDataPack fullDataPack) {

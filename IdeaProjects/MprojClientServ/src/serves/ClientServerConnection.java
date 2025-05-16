@@ -26,6 +26,7 @@ public class ClientServerConnection {
             out.close();
             in.close();
             socket.close();
+            ConsoleTools.statusMessage("Соединение закрыто.");
         } catch (IOException e) {
             ConsoleTools.exceptionMessage("Сбой при закрытии потоков ввода вывода.");
         }
