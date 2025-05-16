@@ -41,30 +41,11 @@ public class ClientServerConnection {
             out.writeLong(fullDataPack.getControlSum());
             if (fullDataPack.getInputDataPack().getDataType() == DataType.SIMPLE) {
                 out.writeInt(fullDataPack.getInputDataPack().getSimpleData());
-            } else out.writeObject(fullDataPack.getInputDataPack().getDataMap());
-
-        } catch (IOException e) {
-            ConsoleTools.exceptionMessage("Сбой при отправлении данных!");
-        }
-    }
-
-    public String receive() {
-        while (true) {
-            try {
-                String string = (String) in.readObject();
-                if (string != null) {
-                    return string;
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                ConsoleTools.exceptionMessage("Сбой при приеме данных");
-                return "";
+            } else {
+                out.writeObject(fullDataPack.getInputDataPack().getDataMap());
             }
-        }
-    }
+            out.flush();
 
-    public void send(String string) {
-        try {
-            out.writeObject(string);
         } catch (IOException e) {
             ConsoleTools.exceptionMessage("Сбой при отправлении данных!");
         }

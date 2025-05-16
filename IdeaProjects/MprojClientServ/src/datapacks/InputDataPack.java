@@ -4,11 +4,10 @@ import lombok.Getter;
 import serves.ConsoleTools;
 import serves.DataType;
 
-import java.io.Serializable;
 import java.util.Map;
 
 @Getter
-public class InputDataPack implements Serializable {
+public class InputDataPack {
     private final String userName;
     private final DataType fileType;
     private int simpleData;

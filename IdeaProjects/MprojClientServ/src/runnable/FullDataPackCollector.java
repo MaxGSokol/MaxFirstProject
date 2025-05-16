@@ -3,6 +3,7 @@ package runnable;
 import datapacks.FullDataPack;
 import datapacks.InputDataPack;
 import serves.ConsoleTools;
+import serves.DataType;
 import source.ClientServerConfig;
 import storage.DataStorage;
 
@@ -33,7 +34,13 @@ public class FullDataPackCollector implements Runnable {
         byte[] obj = null;
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
              ObjectOutputStream outputStream = new ObjectOutputStream(byteArrayOutputStream)) {
-            outputStream.writeObject(inputDataPack);
+            outputStream.writeObject(inputDataPack.getUserName());
+            if (inputDataPack.getDataType() == DataType.SIMPLE) {
+                outputStream.writeInt(inputDataPack.getSimpleData());
+            } else {
+                outputStream.writeObject(inputDataPack.getDataMap());
+            }
+            outputStream.flush();
             obj = byteArrayOutputStream.toByteArray();
         } catch (Exception e) {
             ConsoleTools.exceptionMessage("Невозможно корректно обработать данные!");

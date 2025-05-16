@@ -23,12 +23,7 @@ public class DataSender implements Runnable {
             FullDataPack fullDataPack = DataStorage.FULL_PACK_STORAGE.pollLast();
             if (fullDataPack != null) {
                 checkData(fullDataPack);
-
                 CLIENT_SERVER_CONNECTION.sendAllotOfData(fullDataPack);
-                CLIENT_SERVER_CONNECTION.send("");
-                ConsoleTools.statusMessage(CLIENT_SERVER_CONNECTION.receive());
-
-
             }
         }
     }
