@@ -3,8 +3,8 @@ package runnable;
 import datapacks.InputDataPack;
 import serves.ConsoleTools;
 import serves.DataType;
-import source.ClientServerConfig;
-import storage.DataStorage;
+import source.SingletonClientConfig;
+import storage.SingletonDataStorage;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,24 +13,22 @@ public class InputDataCollector implements Runnable {
 
     @Override
     public void run() {
-
         intro();
 
-        while (!ClientServerConfig.IS_EXIT) {
+        while (!SingletonClientConfig.CLIENT_CONFIG.isExit()) {
 
-            String userName = ClientServerConfig.USER_NAME;
+            String userName = SingletonClientConfig.CLIENT_CONFIG.getUserName();
             DataType fileDataType = getDataType();
             InputDataPack inputDataPack = getDataPack(userName, fileDataType);
-            DataStorage.INPUT_DATA_STORAGE.addFirst(inputDataPack);
+            SingletonDataStorage.DATA_STORAGE.putInputDataToStorage(inputDataPack);
 
             stopThreads();
         }
-
     }
 
     private void intro() {
         ConsoleTools.writeMessage(
-                "Приветствуем вас " + ClientServerConfig.USER_NAME
+                "Приветствуем вас " + SingletonClientConfig.CLIENT_CONFIG.getUserName()
                         + " !\n Вы запустили программу удаленного управления\n "
                         + "системой домашнего кондиционирования.");
         ConsoleTools.writeMessage("Далее вводите информацию с клавиатуры согласно инструкции.");
@@ -115,7 +113,7 @@ public class InputDataCollector implements Runnable {
         ConsoleTools.writeMessage("Если хотите завершить программу нажмите || 1 ||.");
         ConsoleTools.writeMessage("Для продолжения нажмите любую другую клавишу.");
         if (ConsoleTools.readLine().equals("1")) {
-            ClientServerConfig.IS_EXIT = true;
+            SingletonClientConfig.CLIENT_CONFIG.setExit(true);
         }
     }
 

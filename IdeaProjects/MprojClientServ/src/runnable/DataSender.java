@@ -4,29 +4,28 @@ import datapacks.FullDataPack;
 import serves.ClientServerConnection;
 import serves.ConsoleTools;
 import serves.DataType;
-import source.ClientServerConfig;
-import storage.DataStorage;
+import source.SingletonClientConfig;
+import storage.SingletonDataStorage;
 
 import java.io.IOException;
 
 public class DataSender implements Runnable {
-    private final ClientServerConnection CLIENT_SERVER_CONNECTION;
+    private final ClientServerConnection clientServerConnection;
 
     public DataSender() throws IOException {
-        this.CLIENT_SERVER_CONNECTION = new ClientServerConnection();
+        this.clientServerConnection = new ClientServerConnection();
     }
 
     @Override
     public void run() {
-
-        while (!ClientServerConfig.IS_EXIT) {
-            FullDataPack fullDataPack = DataStorage.FULL_PACK_STORAGE.pollLast();
+        while (!SingletonClientConfig.CLIENT_CONFIG.isExit()) {
+            FullDataPack fullDataPack = SingletonDataStorage.DATA_STORAGE.getFullDataPackFromStorage();
             if (fullDataPack != null) {
                 checkData(fullDataPack);
-                CLIENT_SERVER_CONNECTION.sendAllotOfData(fullDataPack);
+                clientServerConnection.sendAllotOfData(fullDataPack);
             }
         }
-        CLIENT_SERVER_CONNECTION.close();
+        clientServerConnection.close();
     }
 
     private void checkData(FullDataPack fullDataPack) {

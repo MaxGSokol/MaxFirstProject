@@ -2,7 +2,7 @@ package serves;
 
 import datapacks.FullDataPack;
 import lombok.Getter;
-import source.ClientServerConfig;
+import source.SingletonClientConfig;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,7 +16,10 @@ public class ClientServerConnection {
     private final Socket socket;
 
     public ClientServerConnection() throws IOException {
-        this.socket = new Socket(ClientServerConfig.IP, ClientServerConfig.PORT);
+        this.socket = new Socket(
+                SingletonClientConfig.CLIENT_CONFIG.getIp(),
+                SingletonClientConfig.CLIENT_CONFIG.getPort()
+        );
         in = new ObjectInputStream(socket.getInputStream());
         out = new ObjectOutputStream(socket.getOutputStream());
     }

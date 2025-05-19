@@ -4,8 +4,8 @@ import datapacks.FullDataPack;
 import datapacks.InputDataPack;
 import serves.ConsoleTools;
 import serves.DataType;
-import source.ClientServerConfig;
-import storage.DataStorage;
+import source.SingletonClientConfig;
+import storage.SingletonDataStorage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
@@ -15,17 +15,16 @@ public class FullDataPackCollector implements Runnable {
 
     @Override
     public void run() {
-
-        while (!ClientServerConfig.IS_EXIT) {
+        while (!SingletonClientConfig.CLIENT_CONFIG.isExit()) {
             FullDataPack fullDataPack;
-            InputDataPack inputDataPack = DataStorage.INPUT_DATA_STORAGE.pollLast();
+            InputDataPack inputDataPack = SingletonDataStorage.DATA_STORAGE.getInputDataFromStorage();
             if (inputDataPack != null) {
                 fullDataPack = FullDataPack.builder()
                         .inputDataPack(inputDataPack)
                         .dataLength(getDataLength(getDataBytesArray(inputDataPack)))
                         .controlSum(getCRC32(getDataBytesArray(inputDataPack))).build();
 
-                DataStorage.FULL_PACK_STORAGE.addFirst(fullDataPack);
+                SingletonDataStorage.DATA_STORAGE.putFullDataPackToStorage(fullDataPack);
             }
         }
     }
