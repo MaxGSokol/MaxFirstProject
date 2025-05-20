@@ -5,7 +5,7 @@ import serves.ClientServerConnection;
 import serves.ConsoleTools;
 import serves.DataType;
 import source.SingletonClientConfig;
-import storage.SingletonDataStorage;
+import storage.SingletonClientDataStorage;
 
 import java.io.IOException;
 
@@ -19,7 +19,8 @@ public class DataSender implements Runnable {
     @Override
     public void run() {
         while (!SingletonClientConfig.CLIENT_CONFIG.isExit()) {
-            FullDataPack fullDataPack = SingletonDataStorage.DATA_STORAGE.getFullDataPackFromStorage();
+            FullDataPack fullDataPack =
+                    SingletonClientDataStorage.CLIENT_DATA_STORAGE.getFullDataPackFromStorage();
             if (fullDataPack != null) {
                 checkData(fullDataPack);
                 clientServerConnection.sendAllotOfData(fullDataPack);

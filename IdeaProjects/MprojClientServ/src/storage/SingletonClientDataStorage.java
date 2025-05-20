@@ -5,19 +5,15 @@ import datapacks.InputDataPack;
 
 import java.util.ArrayDeque;
 
-public enum SingletonDataStorage {
-    DATA_STORAGE;
+public enum SingletonClientDataStorage {
+    CLIENT_DATA_STORAGE;
 
-    private final ArrayDeque<InputDataPack> inputDataStorage;
-    private final ArrayDeque<FullDataPack> fullPackStorage;
+    private volatile ArrayDeque<InputDataPack> inputDataStorage;
+    private volatile ArrayDeque<FullDataPack> fullPackStorage;
 
-    SingletonDataStorage() {
+    SingletonClientDataStorage() {
         fullPackStorage = new ArrayDeque<>();
         inputDataStorage = new ArrayDeque<>();
-    }
-
-    public SingletonDataStorage getDataStorage() {
-        return DATA_STORAGE;
     }
 
     public void putInputDataToStorage(InputDataPack inputDataPack) {

@@ -7,7 +7,6 @@ import java.io.IOException;
 public class Client {
 
     public static void main(String[] args) throws IOException {
-
         DataSender dataSender = new DataSender();
         Thread thread1 = new Thread(dataSender);
         thread1.start();
@@ -19,7 +18,6 @@ public class Client {
         InputDataCollector dataCollector = new InputDataCollector();
         Thread thread3 = new Thread(dataCollector);
         thread3.start();
-
     }
 
 }

@@ -35,12 +35,7 @@ public enum SingletonClientConfig {
             ConsoleTools.exceptionMessage("Невозможно загрузить конфигурационный файл.\n" +
                     "Будет использовано значение по умолчанию.");
             userName = "DEFAUlT USER";
-
         }
-    }
-
-    public SingletonClientConfig getClientConfig() {
-        return CLIENT_CONFIG;
     }
 
 }

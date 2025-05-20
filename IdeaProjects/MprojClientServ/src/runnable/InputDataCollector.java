@@ -4,7 +4,7 @@ import datapacks.InputDataPack;
 import serves.ConsoleTools;
 import serves.DataType;
 import source.SingletonClientConfig;
-import storage.SingletonDataStorage;
+import storage.SingletonClientDataStorage;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +20,7 @@ public class InputDataCollector implements Runnable {
             String userName = SingletonClientConfig.CLIENT_CONFIG.getUserName();
             DataType fileDataType = getDataType();
             InputDataPack inputDataPack = getDataPack(userName, fileDataType);
-            SingletonDataStorage.DATA_STORAGE.putInputDataToStorage(inputDataPack);
+            SingletonClientDataStorage.CLIENT_DATA_STORAGE.putInputDataToStorage(inputDataPack);
 
             stopThreads();
         }
