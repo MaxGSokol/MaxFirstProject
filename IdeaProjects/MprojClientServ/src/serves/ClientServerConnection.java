@@ -1,6 +1,6 @@
 package serves;
 
-import datapacks.FullDataPack;
+import dataclasses.FullData;
 import lombok.Getter;
 import source.SingletonClientConfig;
 
@@ -35,23 +35,12 @@ public class ClientServerConnection {
         }
     }
 
-    public void sendAllotOfData(FullDataPack fullDataPack) {
+    public void send(FullData fullData) {
         try {
-            out.writeObject(fullDataPack.getInputDataPack().getUserName());
-            out.writeObject(fullDataPack.getInputDataPack().getFileType().name());
-            out.writeObject(fullDataPack.getInputDataPack().getDataType().name());
-            out.writeObject(fullDataPack.getSignature());
-            out.writeLong(fullDataPack.getDataLength());
-            out.writeLong(fullDataPack.getControlSum());
-            if (fullDataPack.getInputDataPack().getDataType() == DataType.SIMPLE) {
-                out.writeInt(fullDataPack.getInputDataPack().getSimpleData());
-            } else {
-                out.writeObject(fullDataPack.getInputDataPack().getDataMap());
-            }
+            out.writeObject(fullData);
             out.flush();
-
         } catch (IOException e) {
-            ConsoleTools.exceptionMessage("Сбой при отправлении данных!");
+            ConsoleTools.exceptionMessage("Сбой при передаче данных серверу.");
         }
     }
 

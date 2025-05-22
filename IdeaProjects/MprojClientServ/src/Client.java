@@ -1,5 +1,5 @@
 import runnable.DataSender;
-import runnable.FullDataPackCollector;
+import runnable.FullDataCollector;
 import runnable.InputDataCollector;
 
 import java.io.IOException;
@@ -11,7 +11,7 @@ public class Client {
         Thread thread1 = new Thread(dataSender);
         thread1.start();
 
-        FullDataPackCollector fullDataPackCollector = new FullDataPackCollector();
+        FullDataCollector fullDataPackCollector = new FullDataCollector();
         Thread thread2 = new Thread(fullDataPackCollector);
         thread2.start();
 

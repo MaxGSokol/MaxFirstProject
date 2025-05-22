@@ -1,13 +1,14 @@
 package runnable;
 
-import datapacks.FullDataPack;
+import dataclasses.FullData;
+import dataenums.DayTimeSettings;
 import serves.ClientServerConnection;
 import serves.ConsoleTools;
-import serves.DataType;
-import source.SingletonClientConfig;
-import storage.SingletonClientDataStorage;
 
 import java.io.IOException;
+
+import static source.SingletonClientConfig.CLIENT_CONFIG;
+import static storage.SingletonClientDataStorage.CLIENT_DATA_STORAGE;
 
 public class DataSender implements Runnable {
     private final ClientServerConnection clientServerConnection;
@@ -18,39 +19,41 @@ public class DataSender implements Runnable {
 
     @Override
     public void run() {
-        while (!SingletonClientConfig.CLIENT_CONFIG.isExit()) {
-            FullDataPack fullDataPack =
-                    SingletonClientDataStorage.CLIENT_DATA_STORAGE.getFullDataPackFromStorage();
-            if (fullDataPack != null) {
-                checkData(fullDataPack);
-                clientServerConnection.sendAllotOfData(fullDataPack);
+        while (!CLIENT_CONFIG.isExit()) {
+            FullData fullData = CLIENT_DATA_STORAGE.getFullDataPackFromStorage();
+            if (fullData != null) {
+                checkData(fullData);
+                clientServerConnection.send(fullData);
             }
         }
         clientServerConnection.close();
+
+
     }
 
-    private void checkData(FullDataPack fullDataPack) {
+    private void checkData(FullData fullData) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Проверка содержимого пакета перед отправкой.\n");
-        stringBuilder.append("Содержимое пакета данных.\n");
-        stringBuilder.append("Сигнатура - " + fullDataPack.getSignature() + "\n");
-        stringBuilder.append("Имя пользователя - " + fullDataPack.getInputDataPack().getUserName() + "\n");
-        stringBuilder.append("Способ вывода данных на сервере - " +
-                fullDataPack.getInputDataPack().getFileType().name() + "\n");
-        if (fullDataPack.getInputDataPack().getDataType() == DataType.ADVANCE) {
-            stringBuilder.append("Выбранные температурные режимы.\n");
-
-            for (String key : fullDataPack.getInputDataPack().getDataMap().keySet()) {
-                Integer value = fullDataPack.getInputDataPack().getDataMap().get(key);
-                stringBuilder.append(key + " - " + value + " градуса.\n");
-            }
+        stringBuilder.append("Проверка содержимого пакета перед отправкой.\n")
+                .append("Содержимое пакета данных.\n")
+                .append("Сигнатура - ")
+                .append(fullData.getSignature())
+                .append("\n")
+                .append("Имя пользователя - ")
+                .append(fullData.getInputData().getUserName())
+                .append("\n")
+                .append("Способ вывода данных на сервере - ")
+                .append(fullData.getInputData().getFileType().name())
+                .append("\n")
+                .append("Выбранные температурные режим.\n");
+        for (DayTimeSettings key : fullData.getInputData().getDataMap().keySet()) {
+            Integer value = fullData.getInputData().getDataMap().get(key);
+            stringBuilder.append(key).append(" - ").append(value).append(" град.\n");
         }
-        if (fullDataPack.getInputDataPack().getDataType() == DataType.SIMPLE) {
-            stringBuilder.append("Выбранный температурный режим - "
-                    + fullDataPack.getInputDataPack().getSimpleData() + " градуса.\n");
-        }
-        stringBuilder.append("Длинна данных в байтах - " + fullDataPack.getDataLength() + "\n");
-        stringBuilder.append("CRC32 - " + fullDataPack.getControlSum());
+        stringBuilder.append("Длинна данных в байтах - ")
+                .append(fullData.getDataLength())
+                .append("\n")
+                .append("CRC32 - ")
+                .append(fullData.getControlSum());
         ConsoleTools.statusMessage(stringBuilder.toString());
     }
 
