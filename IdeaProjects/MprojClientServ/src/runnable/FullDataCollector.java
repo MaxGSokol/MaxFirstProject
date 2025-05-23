@@ -2,6 +2,7 @@ package runnable;
 
 import dataclasses.FullData;
 import dataclasses.InputData;
+import dataenums.DayTimeSettings;
 import serves.ConsoleTools;
 
 import java.io.ByteArrayOutputStream;
@@ -26,6 +27,7 @@ public class FullDataCollector implements Runnable {
                         getCRC32(getDataBytesArray(inputData))
                 );
 
+                checkData(fullData);
                 CLIENT_DATA_STORAGE.putFullDataPackToStorage(fullData);
             }
         }
@@ -52,6 +54,32 @@ public class FullDataCollector implements Runnable {
         CRC32 crc32 = new CRC32();
         crc32.update(obj);
         return crc32.getValue();
+    }
+
+    private void checkData(FullData fullData) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Проверка содержимого пакета перед отправкой.\n")
+                .append("Содержимое пакета данных.\n")
+                .append("Сигнатура - ")
+                .append(fullData.getSignature())
+                .append("\n")
+                .append("Имя пользователя - ")
+                .append(fullData.getInputData().getUserName())
+                .append("\n")
+                .append("Способ вывода данных на сервере - ")
+                .append(fullData.getInputData().getFileType().name())
+                .append("\n")
+                .append("Выбранные температурные режим.\n");
+        for (DayTimeSettings key : fullData.getInputData().getDataMap().keySet()) {
+            Integer value = fullData.getInputData().getDataMap().get(key);
+            stringBuilder.append(key).append(" - ").append(value).append(" град.\n");
+        }
+        stringBuilder.append("Длинна данных в байтах - ")
+                .append(fullData.getDataLength())
+                .append("\n")
+                .append("CRC32 - ")
+                .append(fullData.getControlSum());
+        ConsoleTools.statusMessage(stringBuilder.toString());
     }
 
 }

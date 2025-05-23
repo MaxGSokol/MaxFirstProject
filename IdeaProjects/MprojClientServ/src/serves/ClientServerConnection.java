@@ -1,6 +1,5 @@
 package serves;
 
-import dataclasses.FullData;
 import lombok.Getter;
 import source.SingletonClientConfig;
 
@@ -35,7 +34,7 @@ public class ClientServerConnection {
         }
     }
 
-    public void send(FullData fullData) {
+    public void send(Object fullData) {
         try {
             out.writeObject(fullData);
             out.flush();

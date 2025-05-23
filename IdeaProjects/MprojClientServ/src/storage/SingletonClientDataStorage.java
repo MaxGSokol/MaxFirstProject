@@ -9,7 +9,7 @@ public enum SingletonClientDataStorage {
     CLIENT_DATA_STORAGE;
 
     private volatile ArrayDeque<InputData> inputDataStorage;
-    private volatile ArrayDeque<FullData> fullPackStorage;
+    private volatile ArrayDeque<Object> fullPackStorage;
 
     SingletonClientDataStorage() {
         fullPackStorage = new ArrayDeque<>();
@@ -28,7 +28,7 @@ public enum SingletonClientDataStorage {
         fullPackStorage.addFirst(fullData);
     }
 
-    public FullData getFullDataPackFromStorage() {
+    public Object getFullDataPackFromStorage() {
         return fullPackStorage.pollLast();
     }
 }
